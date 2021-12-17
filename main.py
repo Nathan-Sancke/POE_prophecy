@@ -27,7 +27,8 @@ if __name__ == '__main__':
      will give you an audible indication if it is worth more than the minimum threshold decided beforehand.
      If not it will allow you to save it in the csv. 
 
-            PRE : tesseract is installed
+            PRE : tesseract is installed (and the path to its .exe is correct) 
+                and the values for pyautogui have been changed if necessary
             POST : modify the csv
     """
     comm = argparse.ArgumentParser(description="Check and save the value of prophecy")
