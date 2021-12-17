@@ -5,13 +5,12 @@ from tkinter import *
 import cv2  # An image proccessing library
 import keyboard
 import pyautogui  # library to take screenshot
-import pytesseract  # library to transform an image to text library
+import pytesseract  # library to transform an image to text
 
-
-# from prophecy_overview import prophecy_overview
 
 def submit_click(prophecy_name, dictionary):
     try:
+        # save the new prophecy in the CSV
         int(price.get())
         dictionary[prophecy_name] = int(price.get())
         with open('prophecy_overview.csv', 'w') as file:
@@ -23,13 +22,24 @@ def submit_click(prophecy_name, dictionary):
 
 
 if __name__ == '__main__':
+    """
+     This will take the name of the first prophecy and if it exists in the csv,
+     will give you an audible indication if it is worth more than the minimum threshold decided beforehand.
+     If not it will allow you to save it in the csv. 
+
+            PRE : tesseract is installed
+            POST : modify the csv
+    """
     comm = argparse.ArgumentParser(description="Check and save the value of prophecy")
     comm.add_argument('--min', type=int, help="minimum value you want to keep")
+    comm.add_argument('--input', required=True, help="the csv file")
     args = comm.parse_args()
 
     min_price = args.min or 10
     prophecy_overview = dict()
-    with open("prophecy_overview.csv") as file:
+
+    # load the csv in a dict
+    with open(args.input) as file:
         for line in file:
             line = line.strip('\n')
             (key, val) = line.split(";")
@@ -69,6 +79,8 @@ if __name__ == '__main__':
             elif final in prophecy_overview and prophecy_overview[final] < min_price:
                 winsound.Beep(350, 100)
             else:
+                # create a window to register a new prophecie
+
                 window = Tk()
                 window.title('recording')
                 libelle = Label(window, text=final + ' prophecy_name is not yet registered. Please price it.')
