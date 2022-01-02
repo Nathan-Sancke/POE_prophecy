@@ -6,6 +6,7 @@ import cv2  # An image proccessing library
 import keyboard
 import pyautogui  # library to take screenshot
 import pytesseract  # library to transform an image to text
+import time
 
 
 def submit_click(prophecy_name, dictionary):
@@ -38,6 +39,11 @@ if __name__ == '__main__':
 
     min_price = args.min or 10
     prophecy_overview = dict()
+    begin = int(time.time())
+    tot = 0
+    pool = 0
+    silver_coin = 0
+    silver_to_cahos = 0.2
 
     # load the csv in a dict
     with open(args.input) as file:
@@ -47,7 +53,7 @@ if __name__ == '__main__':
             prophecy_overview[key] = int(val)
     # Configure the module tesseract
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-    path = r'C:\Users\natha\PycharmProjects\POE_prophecy\screenshot.PNG'
+    path = r'C:\Users\natha\PycharmProjects\pythonProject\screenshot.PNG'
 
     while True:
         if keyboard.is_pressed('ctrl+alt+f'):  # activates the script when you do ctrl+alt+d
@@ -77,8 +83,13 @@ if __name__ == '__main__':
 
             if final in prophecy_overview and prophecy_overview[final] >= min_price:
                 winsound.Beep(860, 100)
+                tot += prophecy_overview[final]
+                pool = pool + 1
+                silver_coin = silver_coin + 4
             elif final in prophecy_overview and prophecy_overview[final] < min_price:
                 winsound.Beep(350, 100)
+                pool = pool + 1
+                ilver_coin = silver_coin + 4
             else:
                 # create a window to register a new prophecie
 
@@ -96,3 +107,21 @@ if __name__ == '__main__':
                 button_finish = Button(window, text='Do not register', command=window.destroy)
                 button_finish.pack(padx=10, pady=(0, 10))
                 window.mainloop()
+
+        if keyboard.is_pressed('ctrl+alt+h'):
+            end = int(time.time())
+            profit = tot - (silver_coin * silver_to_cahos)
+            cahos_per_hour = profit / (end - begin) * 3600
+
+            msg = "You made " + str(pool) + " pools\n" + "You spend " \
+                  + str(silver_coin) + " silver coins, wich are worse " \
+                  + str(silver_coin * silver_to_cahos) + "cahos\n" \
+                  + "You made " + str(profit) + "profit\n" + "You are making" + str(cahos_per_hour) + " cahos/h"
+            print(msg)
+            window = Tk()
+            window.title('Stats')
+            libelle = Label(window, text=msg)
+            libelle.pack()
+            button_finish = Button(window, text='OK', command=window.destroy)
+            button_finish.pack(padx=10, pady=(0, 10))
+            window.mainloop()
